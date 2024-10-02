@@ -1,58 +1,80 @@
-const User=require('../models/User')
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
-const registerUser = async(req,res)=>{
-    try{
-        const{id,name,email,password,role,isDeleted} = req.body
+exports.register = async (req, res) => {
+  const { name, email, password } = req.body;
 
-        const newUser= new User({
-            id,
-            name,
-            email,
-            password,
-            role,
-            isDeleted
-        })
-        const savedUser=await newUser.save()
-        res.status(201).json(savedUser)
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const user = await User.create({ name, email, password: hashedPassword });
 
-    }catch(error){
-        res.status(500).json({message:"Error al registrar el usuario",error})
-    }
-}
-
-const updateUser = async(req,res)=>{
-    try{
-        const userId=req.params.id
-        const updatedData=req.body
-
-        const updateUser=await User.findByIdAndUpdate(userId,updatedData,{new:true})
-
-        if(!updateUser){
-            return res.status(404).json({message: "Usuario no enoccontrado"})
-        }
-        res.status(200).json(upadatedUser)
-
-    }catch(error){
-        res.status(500).json({message:"Errror al actualizar el usuario",error})
-    }
-}
-
-const deleteUser = async (req, res) => {
-    try {
-        const userId = req.params.id;
-
-        // En lugar de eliminar el usuario, actualizamos el campo isDeleted a true
-        const deletedUser = await User.findByIdAndUpdate(userId, { isDeleted: true }, { new: true });
-
-        if (!deletedUser) {
-            return res.status(404).json({ message: "Usuario no encontrado" });
-        }
-
-        res.status(200).json({ message: "Usuario marcado como eliminado" });
-    } catch (error) {
-        res.status(500).json({ message: "Error al eliminar Usuario", error });
-    }
+  res.json({ message: "Usuario registrado con exito", user });
 };
 
 
-module.exports={deleteUser,registerUser,updateUser}
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ where: { email } });
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return res.status(401).json({ message: "Credencias incorrectas" });
+  }
+
+  const token = jwt.sign(
+    { id: user.id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+  );
+
+  res.json({ token });
+};
+
+
+exports.deleteUser = async (req, res) => {
+    const userId = req.user.id;
+  
+    const user = await User.findByPk(userId);
+    if (!user) return res.status(401).json({ message: "Usuario no encontrado" });
+  
+    
+    user.isDeleted = true;
+    await user.save();
+    
+    res.json({ message: "Usuario marcado como eliminado con éxito" });
+  };
+
+exports.logout = (req, res) => {
+  res.json({ message: "logout exitoso" });
+};
+
+exports.getUser = (req, res) => {
+  const { id } = req.params;
+
+  User.findOne({ _id: id, isDeleted: false })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({ message: "Usuario no encontrado" });
+      }
+
+      res.json(user);
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Error al obtener el Usuario", error });
+    });
+};
+
+exports.updateUser = async(req, res)=>{
+    const { name, email, password } = req.body;
+    const userId = req.user.id;
+    
+    const user = await User.findByPk(userId);
+    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+  
+    if (password) {
+      user.password = await bcrypt.hash(password, 10);
+    }
+    user.name = name || user.name;
+    user.email = email || user.email;
+    await user.save();
+    res.json({ message: "Usuario actualizado con éxito", user });
+  }

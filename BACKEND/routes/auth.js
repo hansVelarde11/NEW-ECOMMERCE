@@ -1,10 +1,33 @@
-const express=require('express')
-const {deleteUser,registerUser,updateUser} = require('../controllers/authController')
-const  router  = require('./product')
+const express = require('express')
+const {
+    login,
+    register,
+    logout,
+    getUser,
+    updateUser,
+    deleteUser,
+  } = require('../controllers/authController'); 
+const authMiddleware = require('../middlewares/authMiddleware');
+const router = express.Router()
 
-const router=express.Router()
-router.post ('/',registerUser)
-router.delete('/',deleteUser)
-router.put('/',updateUser)
 
-module.exports=router
+
+router.post('/register', register);
+
+
+router.post('/login', login);
+
+
+router.post('/logout', authMiddleware, logout); 
+
+
+router.get('/me', authMiddleware, getUser); 
+
+
+router.put('/me', authMiddleware, updateUser);
+
+
+router.delete('/me', authMiddleware, deleteUser);
+
+
+module.exports = router
