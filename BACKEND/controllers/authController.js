@@ -16,7 +16,7 @@ exports.login = async (req, res) => {
 
   const user = await User.findOne({ where: { email } });
   if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.status(401).json({ message: "Credencias incorrectas" });
+    return res.status(404).json({ message: "Credencias incorrectas" });
   }
 
   const token = jwt.sign(
@@ -27,3 +27,50 @@ exports.login = async (req, res) => {
 
   res.json({ token });
 };
+
+exports.logout = (req, res)=>{
+  res.json({message: "logout exitoso"});
+};
+
+exports.updateUser = async(req, res)=>{
+  const { name, email, password } = req.body;
+  const userId = req.user.id;
+  
+  const user = await User.findByPk(userId);
+  if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+
+  if (password) {
+    user.password = await bcrypt.hash(password, 10);
+  }
+  user.name = name || user.name;
+  user.email = email || user.email;
+  await user.save();
+  res.json({ message: "Usuario actualizado con éxito", user });
+}
+
+exports.deleteUser = async (req, res) => {
+  const userId = req.user.id;
+
+  const user = await User.findByPk(userId);
+  if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+
+  
+  user.isDeleted = true;
+  await user.save();
+  
+  res.json({ message: "Usuario marcado como eliminado con éxito" });
+};
+
+
+exports.getUser= async(req,res)=>{
+  const userId = req.user.id
+
+  const user = await User.findByPk(userId)
+  if (!user || user.isDeleted) {
+    return res.status(404).json({ message: "Usuario no encontrado" });
+  }
+
+  res.json({ user }); 
+
+
+}

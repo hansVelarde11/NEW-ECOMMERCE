@@ -16,3 +16,57 @@ exports.createProduct = async (req, res) => {
   });
   res.json({ message: "Producto creado con exito", product });
 };
+
+
+
+exports.getProduct = async (req, res) => {
+  const { id } = req.params; 
+  const product = await Product.findByPk(id); 
+  if (!product) {
+    return res.status(404).json({ message: "Producto no encontrado" });
+  }
+
+  res.json(product); 
+};
+
+
+exports.updateProduct = async (req, res) => {
+  const { id } = req.params; 
+  const { name, description, price, stock, imageUrl } = req.body; 
+
+  const product = await Product.findByPk(id);
+  
+  
+  if (!product) {
+    return res.status(404).json({ message: "Producto no encontrado" });
+  }
+
+  
+  if (name) product.name = name;
+  if (description) product.description = description;
+  if (price) product.price = price;
+  if (stock) product.stock = stock;
+  if (imageUrl) product.imageUrl = imageUrl;
+
+  
+  await product.save();
+
+ 
+  res.json({ message: "Producto actualizado con éxito", product });
+};
+
+exports.deleteProduct = async (req, res) => {
+  const { id } = req.params; 
+
+  const product = await Product.findByPk(id); 
+
+  if (!product) {
+    return res.status(404).json({ message: "Producto no encontrado" });
+  }
+
+  
+  product.isDeleted = true;
+  await product.save();
+
+  res.json({ message: "Producto marcado como eliminado", product });
+};

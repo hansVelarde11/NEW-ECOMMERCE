@@ -7,7 +7,8 @@ const Product = sequelize.define('Product', {
     description: {type: DataTypes.STRING, allowNull: false},
     price: { type: DataTypes.FLOAT, allowNull:false},
     stock: {type: DataTypes.INTEGER,  allowNull:false},
-    imageUrl: { type: DataTypes.STRING}
+    imageUrl: { type: DataTypes.STRING},
+    inDeleted: {type: sequelize.BOOLEAN, defaultValue: false}
 })
 
 module.exports = Product
