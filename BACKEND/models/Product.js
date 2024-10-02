@@ -7,7 +7,7 @@ const Product = sequelize.define('Product',{
     description:{type: DataTypes.STRING,allowNull:false},
     price:{type:DataTypes.FLOAT, allowNull:null},
     stock:{type:DataTypes.INTEGER,allowNull:false},
-    image:{type:DataTypes.STRING}
+    imageUrl:{type:DataTypes.STRING}
 
 })
 
