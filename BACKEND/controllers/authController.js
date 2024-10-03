@@ -1,11 +1,24 @@
-const Usuario = [
-    { id: 1, name: 'Higor Huaman', email: 'higor1302@gmail.com', password: 'Tutia_laLoca2', role: 'cliente' },
-    { id: 2, name: 'Carlos Ramirez', email: 'carlos.ramirez@gmail.com', password: 'C4rlos123!', role: 'admin' },
-    { id: 3, name: 'María Fernanda', email: 'mariaf@gmail.com', password: 'MFer_password99', role: 'cliente' },
-    { id: 4, name: 'Lucía Pérez', email: 'lucia.perez@hotmail.com', password: 'LuciaPerez2020', role: 'cliente' },
-    { id: 5, name: 'Juan Torres', email: 'juan.torres@yahoo.com', password: 'Ju4nTorres!', role: 'empleado' }
-];
-
+const Usuario = sequelize.define('Usuario', {
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    role: {
+      type: DataTypes.STRING,
+      defaultValue: 'cliente'
+    }
+  });
+  
+  module.exports = Usuario;
 const bcrypt = require('bcrypt');
 
 //registerUser
@@ -42,12 +55,12 @@ exports.updateUser = async (req, res) => {
             message: "Cliente no encontrado"
         })
     }
-   // Actualizar el nombre
+ 
    if (req.body.name) {
     user.name = req.body.name;
 }
 
-// Actualizar el email
+
 if (req.body.email) {
     user.email = req.body.email;
 }

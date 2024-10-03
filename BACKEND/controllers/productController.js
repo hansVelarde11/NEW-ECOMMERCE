@@ -1,22 +1,26 @@
-const Producto = [
-        {
-            id: 1, name: 'Zapatillas Running Pro', description: 'Zapatillas ligeras y transpirables para corredores de larga distancia', price: 85.99, stock: 30
-        },
-        {
-            id: 2, name: 'Zapatillas Urban Style', description: 'Zapatillas de estilo urbano con suela antideslizante y diseño moderno', price: 69.99, stock: 45
-        },
-        {
-            id: 3, name: 'Zapatillas Deportivas All-Terrain', description: 'Zapatillas resistentes para todo tipo de terrenos, ideales para hiking y deportes al aire libre', price: 120.00, stock: 25
-        },
-        {
-            id: 4, name: 'Zapatillas Casual Comfort', description: 'Zapatillas casuales con plantilla de espuma viscoelástica para mayor comodidad', price: 55.00, stock: 60
-        },
-        {
-            id: 5, name: 'Zapatillas High Performance Basketball', description: 'Zapatillas de baloncesto de alto rendimiento con soporte extra para los tobillos', price: 140.00, stock: 20
-        }
-    ]  
+const { DataTypes } = require('sequelize');
+const sequelize = require('../db'); // Asegúrate de que el archivo db.js tiene la configuración de la conexión a PostgreSQL
 
+const Producto = sequelize.define('Producto', {
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  price: {
+    type: DataTypes.FLOAT,
+    allowNull: false
+  },
+  stock: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  }
+});
 
+module.exports = Producto;
 //GetProducts
 
 exports.GetProducts = (req,res) =>{
