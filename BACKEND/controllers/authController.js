@@ -1,104 +1,99 @@
-const Usuario = sequelize.define('Usuario', {
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    role: {
-      type: DataTypes.STRING,
-      defaultValue: 'cliente'
-    }
-  });
-  
-  module.exports = Usuario;
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
-//registerUser
+exports.register = async (req, res) => {
+  const { name, email, password } = req.body;
 
-exports.registerUser = (req, res) =>{
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const user = await User.create({ name, email, password: hashedPassword });
 
-    const hashedPassword = bcrypt.hashSync(req.body.password, 10);
-
-
-    const newUser = {
-        id: Usuario.length + 1,
-        name: req.body.name,
-        email: req.body.email,
-        password: hashedPassword,
-        role: req.body.role || 'cliente'
-    }
-
-    Usuario.push(newUser);
-    res.status(201).json({
-        success: true,
-        data: newUser
-    });
+  res.json({ message: "Usuario registrado con exito", user });
 };
 
-//updateUser
+
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ where: { email } });
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return res.status(404).json({ message: "Credencias incorrectas" });
+  }
+
+  if (user.delete) {
+    return res.status(403).json({message: "Usuario eliminado, no se pudo iniciar sesion"})
+  }
+  const token = jwt.sign(
+    { id: user.id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+  );
+  res.json({ token });
+};
+
+
+exports.logout = (req, res)=>{
+  res.json({message: "logout exitoso"});
+};
+
 
 exports.updateUser = async (req, res) => {
-    const userId = parseInt(req.params.id)
-    const user = Usuario.find(usuario => usuario.id === userId)
-
-    if(!user){
-        return res.status(404).json({
-            success: false,
-            message: "Cliente no encontrado"
-        })
-    }
- 
-   if (req.body.name) {
-    user.name = req.body.name;
-}
-
-
-if (req.body.email) {
-    user.email = req.body.email;
-}
-
-
-if (req.body.password) {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    user.password = hashedPassword;
-}
-
-res.status(200).json({
-    success: true,
-    data: user
-});
-};
-
-//delete User
-
-exports.deleteUser = (req, res) => {
-    const userId = parseInt(req.params.id);
-    const userIndex = Usuario.findIndex(usuario => usuario.id === userId);
-
-    if (userIndex === -1) {
-        return res.status(404).json({
-            success: false,
-            message: "Usuario no encontrado"
-        });
-    }
-
-   
-    Usuario.splice(userIndex, 1);
-
-    res.status(200).json({
-        success: true,
-        message: "Usuario eliminado exitosamente"
+    const { name, email, password } = req.body;
+    const userId = req.user.id;
+    
+    // Buscar el usuario con id y que no esté eliminado
+    const user = await User.findOne({ 
+      where: { 
+        id: userId,
+        isDeleted: false
+      }
     });
-};
+    
+    if (!user) return res.status(404).json({ message: "Usuario no encontrado o eliminado" });
+  
+    // Si se proporciona una contraseña, se encripta antes de guardarla
+    if (password) {
+      user.password = await bcrypt.hash(password, 10);
+    }
+    
+    // Actualizar los demás campos si se proporcionan
+    user.name = name || user.name;
+    user.email = email || user.email;
+    
+    // Guardar cambios
+    await user.save();
+    
+    res.json({ message: "Usuario actualizado con éxito", user });
+  };
+
+
+
+exports.deleteUser = async (req, res) => {
+    const userId = req.user.id;
+  
+    const user = await User.findOne({
+      where: {
+        id: userId,
+        isDeleted: false
+      }
+    });
+  
+    if (!user) return res.status(404).json({ message: "Usuario no encontrado o ya eliminado" });
+  
+    user.isDeleted = true;
+    await user.save();
+  
+    res.json({ message: "Usuario marcado como eliminado con éxito" });
+  };
 
 
 
 
+exports.getUser= async(req,res)=>{
+  const userId = req.user.id
+  const user = await User.findByPk(userId)
+  if (!user || user.isDeleted) {
+    return res.status(404).json({ message: "Usuario no encontrado" });
+  }
+  res.json({ user }); 
+}

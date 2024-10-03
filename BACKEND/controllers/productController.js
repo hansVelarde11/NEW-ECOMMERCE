@@ -1,103 +1,93 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../db'); // Asegúrate de que el archivo db.js tiene la configuración de la conexión a PostgreSQL
-
-const Producto = sequelize.define('Producto', {
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: false
-  },
-  price: {
-    type: DataTypes.FLOAT,
-    allowNull: false
-  },
-  stock: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  }
-});
-
-module.exports = Producto;
-//GetProducts
-
-exports.GetProducts = (req,res) =>{
-    res.status(200).json({
-        success: true,
-        data: Producto
-    })
-}
+const Product = require("../models/Product")
 
 
-//CreateProduct
+exports.getProducts = async (req, res) => {
 
-exports.CreateProduct = (req,res) =>{
-    const newProduct = {
-        id: Producto.length + 1,
-        name: req.body.name,
-        description: req.body.description,
-        price: req.body.price,
-        stock: req.body.stock
-    };
-    Producto.push(newProduct);
-    res.status(201).json({
-        success: true,
-        data: newProduct
+    const products = await Product.findAll({
+      where: {
+        isDeleted: false
+      }
     });
-};
-
-//UpdateProduct
-
-exports.updateProduct = (req, res) => {
-    const productId = parseInt(req.params.id)
-    const product = Producto.find(producto => producto.id === productId)
-
-    if(!product){
-        return res.status(404).json({
-            success: false,
-            message: "Producto no encontrado"
-        })
-    }
-
-    if (req.body.name) {
-        product.name = req.body.name
-    }
-
-    if (req.body.description){
-        product.description = req.body.description
-    }
-
-    if (req.body.price){
-        product.price = req.body.price
-    }
-
-    res.status(200).json({
-        success: true,
-        data: product
-    })
-
-}
-
-//DeleteProduct
-
-exports.deleteProduct = (req, res) => {
-    const productId = parseInt(req.params.id);
-    const productIndex = Producto.findIndex(producto => producto.id === productId);
-
-    if (productIndex === -1) {
-        return res.status(404).json({
-            success: false,
-            message: "Producto no encontrado"
-        });
-    }
-
-    
-    Producto.splice(productIndex, 1);
-
-    res.status(200).json({
-        success: true,
-        message: "Producto eliminado exitosamente"
+    res.json(products);
+  };
+  
+  exports.getProduct = async (req, res) => {
+    const { id } = req.params;
+  
+    const product = await Product.findOne({
+      where: {
+        id: id,
+        isDeleted: false
+      }
     });
-};
+  
+    if (!product) {
+      return res.status(404).json({ message: "Producto no encontrado o eliminado" });
+    }
+  
+    res.json(product);
+  };
+  
+
+  exports.deleteProduct = async (req, res) => {
+    const { id } = req.params;
+  
+    const product = await Product.findOne({
+      where: {
+        id: id,
+        isDeleted: false
+      }
+    });
+  
+    if (!product) {
+      return res.status(404).json({ message: "Producto no encontrado o ya eliminado" });
+    }
+  
+    product.isDeleted = true;
+    await product.save();
+  
+    res.json({ message: "Producto marcado como eliminado", product });
+  };
+  
+
+
+  exports.updateProduct = async (req, res) => {
+    const { id } = req.params;
+    const { name, description, price, stock, imageUrl } = req.body;
+  
+    const product = await Product.findOne({
+      where: {
+        id: id,
+        isDeleted: false
+      }
+    });
+  
+    if (!product) {
+      return res.status(404).json({ message: "Producto no encontrado o eliminado" });
+    }
+  
+    if (name) product.name = name;
+    if (description) product.description = description;
+    if (price) product.price = price;
+    if (stock) product.stock = stock;
+    if (imageUrl) product.imageUrl = imageUrl;
+  
+    await product.save();
+  
+    res.json({ message: "Producto actualizado con éxito", product });
+  };
+
+
+
+
+  exports.createProduct = async (req, res) => {
+    const { name, description, price, stock, imageUrl } = req.body;
+    const product = await Product.create({
+      name,
+      description,
+      price,
+      stock,
+      imageUrl,
+    });
+    res.json({ message: "Producto creado con exito", product });
+  };
