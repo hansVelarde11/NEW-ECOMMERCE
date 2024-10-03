@@ -7,7 +7,7 @@ const User = sequelize.define('User', {
     email: { type: DataTypes.STRING, allowNull: false },
     password: { type: DataTypes.STRING, allowNull: true },
     role: { type: DataTypes.STRING, defaultValue: 'cliente' },
-    inDeleted: {type: sequelize.BOOLEAN, defaultValue: false}
+    isDeleted: {type: sequelize.BOOLEAN, defaultValue: false}
 
 })
 
