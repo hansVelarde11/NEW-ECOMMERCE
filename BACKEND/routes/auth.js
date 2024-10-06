@@ -1,24 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const userController = require("../controllers/userController");
-const authMiddleware = require("../middlewares/authMiddleware"); // Middleware para verificar el token JWT
+const { register } = require("../controllers/AuthController/Registro");
+const { login } = require("../controllers/AuthController/Login");
+const { logout } = require("../controllers/AuthController/Logout");
+const { getUser } = require("../controllers/AuthController/GetUser");
+const { deleteUser } = require("../controllers/AuthController/Delete");
+const { updateUser } = require("../controllers/AuthController/Update");
+const authMiddleware = require("../middlewares/authMiddleware");
 
-// Registro de usuario
-router.post("/register", userController.register);
-
-// Login de usuario
-router.post("/login", userController.login);
-
-// Logout de usuario (opcional, si solo quieres un mensaje)
-router.post("/logout", authMiddleware, userController.logout);
-
-// Actualización de usuario (debe estar autenticado)
-router.put("/update", authMiddleware, userController.updateUser);
-
-// Eliminar usuario (marcar como eliminado, debe estar autenticado)
-router.delete("/delete", authMiddleware, userController.deleteUser);
-
-// Obtener usuario por ID (debe estar autenticado)
-router.get("/profile", authMiddleware, userController.getUser);
+router.post("/register", register);
+router.post("/login", login);
+router.post("/logout", authMiddleware, logout); 
+router.get("/me", authMiddleware, getUser);     
+router.put("/update", authMiddleware, updateUser); 
+router.delete("/delete", authMiddleware, deleteUser);
 
 module.exports = router;
