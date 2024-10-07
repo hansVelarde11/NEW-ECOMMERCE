@@ -1,22 +1,14 @@
 {
-  "name": "new-ecommerce",
+  "name": "backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hansVelarde11/NEW-ECOMMERCE.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/hansVelarde11/NEW-ECOMMERCE/issues"
-  },
-  "homepage": "https://github.com/hansVelarde11/NEW-ECOMMERCE#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",

@@ -10,3 +10,4 @@ const Cart = sequelize.define('Cart',{
     quantify:{type:DataTypes.INTEGER,allowNull:false}
 })
 module.exports = Cart
+

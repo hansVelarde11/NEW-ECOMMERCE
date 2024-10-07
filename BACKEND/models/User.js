@@ -10,4 +10,3 @@ const User = sequelize.define("User", {
   isDeleted:{type:DataTypes.BOOLEAN,defaultValue:false}
 });
 module.exports = User;
- 
