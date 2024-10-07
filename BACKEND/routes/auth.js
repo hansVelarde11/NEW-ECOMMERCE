@@ -6,6 +6,8 @@ const { logout } = require("../controllers/AuthController/Logout");
 const { getUser } = require("../controllers/AuthController/GetUser");
 const { deleteUser } = require("../controllers/AuthController/Delete");
 const { updateUser } = require("../controllers/AuthController/Update");
+const { forgetPassword } = require("../controllers/AuthController/ForgetPassword");
+const { resetPassword } = require('../controllers/AuthController/Reset-Password');
 const authMiddleware = require("../middlewares/authMiddleware");
 
 router.post("/register", register);
@@ -14,5 +16,6 @@ router.post("/logout", authMiddleware, logout);
 router.get("/me", authMiddleware, getUser);     
 router.put("/update", authMiddleware, updateUser); 
 router.delete("/delete", authMiddleware, deleteUser);
-
+router.post("/forget-password", forgetPassword);
+router.post('/reset-password', resetPassword); 
 module.exports = router;
