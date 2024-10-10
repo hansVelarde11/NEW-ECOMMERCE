@@ -1,16 +1,12 @@
-const User = require('../models/User');
+const User = require('../../models/User');
 
-exports.getUsers = async (req, res) => {
-  const { includeDeleted } = req.query; 
-
-  // Obtener usuarios según la condición
-  const users = includeDeleted === 'true'
-    ? await User.findAll() //  todos los usuarios, incluidos los eliminados
-    : await User.findAll({ where: { isDeleted: false } }); // solo usuarios activos
-
-  //  respuesta
-  res.status(200).json({
-    success: true,
-    data: users,
-  });
+const getUsers = async (req, res) => {
+  try {
+      const users = await User.findAll();
+      res.json(users);
+  } catch (error) {
+      console.error("Error al obtener usuarios:", error);
+      res.status(500).json({ error: "Error interno del servidor" });
+  }
 };
+module.exports =getUsers;

@@ -1,6 +1,8 @@
-const Product = require("../models/Product");
+const { mapFinderOptions } = require("sequelize/lib/utils");
+const Product = require("../../models/Product");
 
-exports.updateProduct = async (req, res) => {
+
+const updateProduct = async (req, res) => {
   const { id } = req.params;
   const { name, description, price, stock, imageUrl } = req.body;
 
@@ -25,3 +27,5 @@ exports.updateProduct = async (req, res) => {
 
   res.json({ message: "Producto actualizado con éxito", product });
 };
+
+module.exports=updateProduct;

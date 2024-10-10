@@ -1,9 +1,9 @@
 // controllers/authController.js
-const User = require('../models/User');
-const sendEmail = require('../utils/sendEmail');
+const User = require('../../models/User');
+const sendEmail = require('../../Utils/sendEmail');
 const crypto = require('crypto');
 
-exports.forgotPassword = async (req, res) => {
+const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     try {
@@ -34,3 +34,5 @@ exports.forgotPassword = async (req, res) => {
         res.status(500).json({ message: 'Error al enviar el correo.' });
     }
 };
+
+module.exports = forgotPassword;

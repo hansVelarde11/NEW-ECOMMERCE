@@ -7,10 +7,10 @@ const User = sequelize.define('User', {
     email: { type: DataTypes.STRING, allowNull: false },
     password: { type: DataTypes.STRING, allowNull: true },
     role: { type: DataTypes.STRING, defaultValue: 'cliente' },
-    isDeleted: {type: sequelize.BOOLEAN, defaultValue: false},
+    isDeleted: {type:  DataTypes.BOOLEAN, defaultValue: false},
     resetToken: {type: DataTypes.STRING, allowNull: true},
     resetTokenExpiration: {type: DataTypes.DATE, allowNull: true},
 
 })
 
-module.exports = User
+module.exports = User;

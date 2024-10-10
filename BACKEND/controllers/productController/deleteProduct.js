@@ -1,6 +1,7 @@
-const Product = require("../models/Product");
+const Product = require("../../models/Product");
 
-exports.deleteProduct = async (req, res) => {
+
+const deleteProduct = async (req, res) => {
   const { id } = req.params;
 
   const product = await Product.findByPk(id);
@@ -14,3 +15,4 @@ exports.deleteProduct = async (req, res) => {
 
   res.json({ message: "Producto marcado como eliminado", product });
 };
+module.exports =deleteProduct;

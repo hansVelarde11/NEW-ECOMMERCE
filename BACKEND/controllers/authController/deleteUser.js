@@ -1,6 +1,6 @@
-const User = require('../models/User');
+const User = require('../../models/User');
 
-exports.deleteUser = async (req, res) => {
+const deleteUser = async (req, res) => {
   const userId = req.user.id;
 
   // Buscar el usuario
@@ -21,3 +21,5 @@ exports.deleteUser = async (req, res) => {
 
   res.json({ message: "Usuario marcado como eliminado con éxito" });
 };
+
+module.exports = deleteUser;

@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
-const User = require('../models/User');
+const User = require('../../models/User');;
 
-exports.updateUser = async (req, res) => {
+const updateUser = async (req, res) => {
   const { name, email, password } = req.body;
   const userId = req.user.id;
 
@@ -31,3 +31,5 @@ exports.updateUser = async (req, res) => {
 
   res.json({ message: "Usuario actualizado con éxito", user: { id: user.id, name: user.name, email: user.email } });
 };
+
+module.exports =updateUser;

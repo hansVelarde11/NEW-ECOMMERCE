@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 const cors = require("cors");
 const sequelize = require("./config/database");
 const authRoutes = require("./routes/auth");

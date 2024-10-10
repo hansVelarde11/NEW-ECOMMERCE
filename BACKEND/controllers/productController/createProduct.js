@@ -1,6 +1,6 @@
-const Product = require("../models/Product");
+const Product = require("../../models/Product");
 
-exports.createProduct = async (req, res) => {
+const createProduct = async (req, res) => {
   const { name, description, price, stock, imageUrl } = req.body;
 
   // Verificar si ya existe un producto con el mismo nombre
@@ -26,3 +26,4 @@ exports.createProduct = async (req, res) => {
 
   res.status(201).json({ message: "Producto creado con éxito", product });
 };
+module.exports =createProduct;

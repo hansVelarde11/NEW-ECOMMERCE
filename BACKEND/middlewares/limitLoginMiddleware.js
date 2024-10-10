@@ -12,7 +12,7 @@ const rateLimiter = new RateLimiterMemory({
     duration: blockDuration,  
   });
 
-exports.limitLoginMiddleware = (req, res, next) => {
+const limitLoginMiddleware = (req, res, next) => {
     const userIp = req.ip;  // Usar la IP del usuario como clave
     
     // Intentar consumir puntos (un intento fallido)
@@ -28,3 +28,4 @@ exports.limitLoginMiddleware = (req, res, next) => {
         });
       });
   };
+  module.exports =limitLoginMiddleware;

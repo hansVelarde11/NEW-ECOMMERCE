@@ -1,8 +1,8 @@
 const bcrypt = require('bcrypt');
-const User = require('../models/User'); 
+const User = require('../../models/User');
 
 
-exports.register = async (req, res) => {
+const register = async (req, res) => {
 const {name, email, password}= req.body;
 
 //verificamos si el usurio existe:
@@ -16,3 +16,4 @@ const user = await User.create({ name, email, password: hashedPassword });
 res.json({ message: "Usuario registrado con exito", user });
 
 };
+module.exports = register;

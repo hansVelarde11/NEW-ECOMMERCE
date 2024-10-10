@@ -1,6 +1,7 @@
-const Product = require("../models/Product");
+const Product = require("../../models/Product");
 
-exports.getProduct = async (req, res) => {
+
+const getProduct = async (req, res) => {
   const { id } = req.params;
 
   const product = await Product.findOne({
@@ -16,3 +17,4 @@ exports.getProduct = async (req, res) => {
 
   res.json(product);
 };
+module.exports=getProduct;

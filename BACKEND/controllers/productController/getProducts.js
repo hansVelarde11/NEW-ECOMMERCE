@@ -1,6 +1,7 @@
-const Product = require("../models/Product");
+const Product = require("../../models/Product");
 
-exports.getProducts = async (req, res) => {
+
+const getProducts = async (req, res) => {
   const products = await Product.findAll({
     where: {
       isDeleted: false
@@ -8,3 +9,4 @@ exports.getProducts = async (req, res) => {
   });
   res.json(products);
 };
+module.exports =getProducts;
