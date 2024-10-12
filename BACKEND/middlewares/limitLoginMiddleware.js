@@ -15,6 +15,15 @@ const rateLimiter = new RateLimiterMemory({
 const limitLoginMiddleware = (req, res, next) => {
     const userIp = req.ip;  // Usar la IP del usuario como clave
     
+/*const userEmail = req.body.email || '';  // Usar el email del usuario como clave
+  
+  if (!userEmail) {
+    return res.status(400).json({ message: 'El email es obligatorio.' });
+  } */
+
+
+
+
     // Intentar consumir puntos (un intento fallido)
     rateLimiter.consume(userIp)
       .then(() => {
@@ -29,3 +38,4 @@ const limitLoginMiddleware = (req, res, next) => {
       });
   };
   module.exports =limitLoginMiddleware;
+  

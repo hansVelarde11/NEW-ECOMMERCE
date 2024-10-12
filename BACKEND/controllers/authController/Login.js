@@ -18,8 +18,8 @@ const login = async (req, res) => {
   }
 
   // verificar si el usuario ha sido eliminado
-  if (user.delete) {
-    return res.status(403).json({ message: "usuario eliminado, no se pudo iniciar sesion" });
+  if (user.isDeleted) { // Cambiar de user.delete a user.isDeleted
+    return res.status(403).json({ message: "usuario eliminado, no se pudo iniciar sesión" });
   }
 
   // generar el token JWT
@@ -29,7 +29,8 @@ const login = async (req, res) => {
     { expiresIn: "1d" }
   );
 
-
+  
   res.json({ token });
 };
- module.exports = login;
+
+module.exports = login;

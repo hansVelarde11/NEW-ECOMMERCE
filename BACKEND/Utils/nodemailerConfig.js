@@ -1,14 +1,14 @@
 
 const nodemailer = require('nodemailer');
 
-exports.createTransporter = (email, password) => {
+const createTransporter = (email, password) => {
     return nodemailer.createTransport({
-        service: 'gmail',
+        service: 'Gmail',
         auth: {
-            user: email,
-            pass: password,
+            user: email, // Usar el email pasado como argumento
+            pass: password, // Usar la contraseña pasada como argumento
         },
     });
 };
 
-
+module.exports = createTransporter; // Exportar la función, no el objeto nodemailer

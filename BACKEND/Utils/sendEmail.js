@@ -1,16 +1,16 @@
 
 const createTransporter = require('./nodemailerConfig');
 
-exports.sendEmail = async (user, subject, text) => {
+const sendEmail = async (user, subject, text) => {
     const mailOptions = {
-        from: 'cameroza@gmail.com', 
+        from: process.env.EMAIL_USER, // Usar variable de entorno para el email
         to: user.email,
         subject,
         text,
     };
 
     try {
-        const transporter = createTransporter('tuemail@gmail.com', 'tupassword'); // Credenciales de tu app
+        const transporter = createTransporter(process.env.EMAIL_USER, process.env.EMAIL_PASS); // Usar variables de entorno para las credenciales
         await transporter.sendMail(mailOptions);
         console.log(`Correo enviado a ${user.email}`);
     } catch (error) {
@@ -19,3 +19,4 @@ exports.sendEmail = async (user, subject, text) => {
     }
 };
 
+module.exports = sendEmail;

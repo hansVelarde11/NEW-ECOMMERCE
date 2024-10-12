@@ -1,4 +1,3 @@
-// controllers/authController.js
 const User = require('../../models/User');
 const sendEmail = require('../../Utils/sendEmail');
 const crypto = require('crypto');
@@ -22,11 +21,11 @@ const forgotPassword = async (req, res) => {
         // Guardar el token en la base de datos
         await user.save();
 
-        // Crear el enlace de restablecimiento de contraseña
-        const resetLink = `http://localhost:3000/reset-password/${token}`;
+        // Aquí puedes enviar un mensaje sin el enlace
+        const message = 'Se ha solicitado un restablecimiento de contraseña. Si deseas restablecerla, usa el siguiente token: ' + token;
 
         // Enviar el correo usando la función de utilidad
-        await sendEmail(user, 'Restablecer Contraseña', `Haz clic en el enlace para restablecer tu contraseña: ${resetLink}`);
+        await sendEmail(user, 'Restablecer Contraseña', message);
 
         res.json({ message: 'Correo de restablecimiento enviado.' });
     } catch (error) {

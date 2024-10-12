@@ -6,7 +6,7 @@ const Logout = require('../controllers/authController/Logout');
 const getUser = require('../controllers/authController/getUsers');
 const updateUser = require('../controllers/authController/updateUser');
 const deleteUser = require('../controllers/authController/deleteUser');
-
+const resetPassword = require("../controllers/authController/reset-password");
 const authMiddleware = require('../middlewares/authMiddleware');
 const limitLoginMiddleware = require('../middlewares/limitLoginMiddleware');
 const router = express.Router();
@@ -19,6 +19,7 @@ router.post('/login', limitLoginMiddleware, Login);
 
 // Ruta para solicitar restablecimiento de contraseña
 router.post('/forgot-password', forgotPassword); 
+router.post('/reset-password', resetPassword);
 
 // Ruta para cerrar sesión
 router.post('/logout', authMiddleware, Logout); 
@@ -27,7 +28,7 @@ router.post('/logout', authMiddleware, Logout);
 router.get('/users', authMiddleware, getUser); 
 
 // Ruta para actualizar la información del usuario autenticado
-router.put('/me', authMiddleware, updateUser);
+router.put('/update', authMiddleware, updateUser);
 
 // Ruta para eliminar el usuario autenticado
 router.delete('/me', authMiddleware, deleteUser);
