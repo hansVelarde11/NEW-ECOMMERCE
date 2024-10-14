@@ -15,14 +15,22 @@ exports.forgetPassword = async (req, res) => {
     }
 
     // Generar un token de restablecimiento de contraseña (válido por 1 hora)
-    const resetToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    
+    let resetToken;
+    try {
+      resetToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    } catch (error) {
+      console.error("Error generando el token:", error.message);
+      return res.status(500).json({ message: "Error generando el token" });
+    }
+
 
     // URL para restablecer la contraseña
     const resetURL = `http://localhost:3000/reset-password/${resetToken}`;
 
     // Configurar el contenido del correo
     const mailOptions = {
-      from: "ramos213@gmail.com", 
+      from: "ranmogonzales@gmail.com", 
       to: user.email,
       subject: "Restablecimiento de contraseña",
       text: `Hemos recibido una solicitud para restablecer tu contraseña. Usa el siguiente enlace para cambiarla: ${resetURL}`,
@@ -34,7 +42,8 @@ exports.forgetPassword = async (req, res) => {
     // Enviar una respuesta de éxito
     res.status(200).json({ message: "Correo de restablecimiento de contraseña enviado" });
   } catch (error) {
-    console.error("Error en forgetPassword:", error);
-    res.status(500).json({ message: "Error en el servidor" });
+    console.error("Error en forgetPassword:", error.message);
+    res.status(500).json({ message: "Error en el servidor", error: error.message });
   }
-};
+  };
+

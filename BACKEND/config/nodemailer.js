@@ -1,15 +1,22 @@
 const nodemailer = require('nodemailer');
 
-export const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: false, // true for port 465, false for other ports
-    auth: {
-      user: "ramos213@gmail.com",
-      pass: "avenidaCristo",
-    },
-  });
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // Cambiar a true para conexiones seguras
+  auth: {
+    user: "ranmogonzales@gmail.com", // Tu correo electrónico
+    pass: "njts lltc tonl bsrx", // La contraseña de aplicación
+  },
+});
 
-  transporter.verify().then(() =>{
-    console.log('Ready for sends emails')
-  })
+// Verificar la conexión del transportador
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("Error en la verificación del transportador:", error);
+  } else {
+    console.log("Transportador está listo para enviar correos");
+  }
+});
+
+module.exports = transporter;

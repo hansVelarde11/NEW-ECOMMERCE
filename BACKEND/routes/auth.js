@@ -17,5 +17,5 @@ router.get("/me", authMiddleware, getUser);
 router.put("/update", authMiddleware, updateUser); 
 router.delete("/delete", authMiddleware, deleteUser);
 router.post("/forget-password", forgetPassword);
-router.post('/reset-password', resetPassword); 
+router.post('/reset-password:token', resetPassword); 
 module.exports = router;

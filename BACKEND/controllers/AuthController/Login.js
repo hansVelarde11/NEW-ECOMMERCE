@@ -5,8 +5,8 @@ const { RateLimiterMemory } = require('rate-limiter-flexible');
 
 // Configurar el limitador de tasas en memoria
 const rateLimiter = new RateLimiterMemory({
-  points: 5, // Permitir 5 intentos
-  duration: 15 * 60, // Durante 15 minutos
+  points: 5, 
+  duration: 15 * 60, 
 });
 
 // Controlador de login
