@@ -5,8 +5,8 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true, // Cambiar a true para conexiones seguras
   auth: {
-    user: "ranmogonzales@gmail.com", // Tu correo electrónico
-    pass: "njts lltc tonl bsrx", // La contraseña de aplicación
+    user: "ranmogonzales@gmail.com", 
+    pass: "njts lltc tonl bsrx", //contraseña de aplicacion
   },
 });
 

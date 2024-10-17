@@ -14,11 +14,11 @@ exports.forgetPassword = async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    // Generar un token de restablecimiento de contraseña (válido por 1 hora)
+    // Generar un token de restablecimiento de contraseña (válido por 6m)
     
     let resetToken;
     try {
-      resetToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+      resetToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "6m" });
     } catch (error) {
       console.error("Error generando el token:", error.message);
       return res.status(500).json({ message: "Error generando el token" });
@@ -26,7 +26,7 @@ exports.forgetPassword = async (req, res) => {
 
 
     // URL para restablecer la contraseña
-    const resetURL = `http://localhost:3000/reset-password/${resetToken}`;
+    const resetURL = `http://localhost:3000/api/auth/reset-password/${resetToken}`;
 
     // Configurar el contenido del correo
     const mailOptions = {

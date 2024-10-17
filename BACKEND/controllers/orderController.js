@@ -1,0 +1,1 @@
+//Registrar ordenes de comprar, quitar, agregar, actualizacion, delete true/false, fecha/hora_orden, llamar al usuario con las compras hechas con pendiente de pago o ya pagado.

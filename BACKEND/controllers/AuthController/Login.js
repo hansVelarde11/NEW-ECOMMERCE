@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../../models/User");
-const { RateLimiterMemory } = require('rate-limiter-flexible');
+const { RateLimiterMemory, RateLimiterRes } = require('rate-limiter-flexible');
 
 // Configurar el limitador de tasas en memoria
 const rateLimiter = new RateLimiterMemory({
