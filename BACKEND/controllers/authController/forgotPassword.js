@@ -1,6 +1,8 @@
+
 const User = require('../../models/User');
 const sendEmail = require('../../Utils/sendEmail');
 const crypto = require('crypto');
+
 
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
@@ -13,8 +15,8 @@ const forgotPassword = async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
 
-        // Generar el token y la expiración
-        const token = crypto.randomBytes(32).toString('hex');
+        // Generar el token de 6 dígitos
+        const token = Math.floor(100000 + Math.random() * 900000).toString();
         user.resetToken = token;
         user.resetTokenExpiration = Date.now() + 3600000; // 1 hora
 
@@ -22,7 +24,7 @@ const forgotPassword = async (req, res) => {
         await user.save();
 
         // Aquí puedes enviar un mensaje sin el enlace
-        const message = 'Se ha solicitado un restablecimiento de contraseña. Si deseas restablecerla, usa el siguiente token: ' + token;
+        const message = 'Se ha solicitado un restablecimiento de contraseña. Si deseas restablecerla, usa el siguiente código de verificación: ' + token;
 
         // Enviar el correo usando la función de utilidad
         await sendEmail(user, 'Restablecer Contraseña', message);

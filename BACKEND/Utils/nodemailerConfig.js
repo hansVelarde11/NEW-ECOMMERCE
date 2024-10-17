@@ -11,4 +11,4 @@ const createTransporter = (email, password) => {
     });
 };
 
-module.exports = createTransporter; // Exportar la función, no el objeto nodemailer
+module.exports = createTransporter; 
