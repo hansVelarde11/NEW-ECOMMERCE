@@ -1,13 +1,15 @@
 const express = require('express');
 const cors = require("cors");
-const session = require('express-session'); // Asegúrate de instalar express-session
-const passport = require('./controllers/authController/passport'); // Asegúrate de que la ruta sea correcta
+const session = require('express-session'); 
+const passport = require('passport'); 
 const sequelize = require("./config/database");
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/product");
 
-
 require("dotenv").config();
+require('./controllers/authController/Facebook'); // Asegúrate de que esta línea esté presente para cargar la estrategia
+require('./controllers/authController/Google'); // Asegúrate de que esta línea esté presente para cargar la estrategia de Google
+require('./controllers/authController/Instagram'); // Importar la estrategia de Instagram
 
 const app = express();
 
@@ -20,7 +22,7 @@ app.use(session({
 }));
 
 app.use(passport.initialize());
-app.use(passport.session()); // Para utilizar sesiones
+app.use(passport.session()); 
 
 app.use("/auth", authRoutes);
 app.use("/api/products", productRoutes);
