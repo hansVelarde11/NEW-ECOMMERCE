@@ -6,10 +6,8 @@ const { Op } = require('sequelize');
 exports.getUserOrdersByStatus = async (req, res) => {
     try {
       
-        const { userId } = req.params;  // suponiendo que lo envías en la URL como /usuarios/:userId/ordenes
-        const { status } = req.query;   // obtenemos el estado desde la query, por ejemplo ?status=pendiente
+        const { userId, status} = req.body;
 
-     
         const user = await User.findByPk(userId);
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado' });

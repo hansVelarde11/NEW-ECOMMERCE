@@ -1,21 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
-const { DeleteOrder } = require ("../controllers/OrderController/DeleteOrder")
-const { GetuserbyStatus} = require ("../controllers/OrderController/GetuserbyStatus")
-const { RegistrarOrder } = require ("../controllers/OrderController/RegistarOrder")
-const { UpdateOrder } = require ("../controllers/OrderController/UpdateOrder") 
+const { deleteOrder } = require ("../controllers/OrderController/DeleteOrder")
+const { getUserOrdersByStatus} = require ("../controllers/OrderController/GetuserbyStatus")
+const { registerOrder } = require ("../controllers/OrderController/RegistarOrder")
+const { updateOrder } = require ("../controllers/OrderController/UpdateOrder") 
 
-
-
-
-router.post('/orders', RegistrarOrder);
-router.get('/users/:userId/orders', GetuserbyStatus);
-router.put('/orders/:orderId', UpdateOrder);
-router.delete('/orders/:orderId', DeleteOrder);
-
-module.exports = router;
-
-
+router.post('/', registerOrder);
+router.post('/orders/getUserOrdersByStatus', getUserOrdersByStatus);
+router.put('/updateOrder/:id', updateOrder);
+router.delete('/orders/:id', deleteOrder);
 
 module.exports = router;
