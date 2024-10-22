@@ -18,7 +18,7 @@ exports.getUserOrdersByStatus = async (req, res) => {
             where: {
                 userId: userId,
                 status: {
-                    [Op.or]: ['pendiente', 'pagado'] 
+                    [Op.or]: ['pendiente', 'pagado', 'eliminada'] 
                 }
             }
         });

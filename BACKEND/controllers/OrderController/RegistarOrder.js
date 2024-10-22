@@ -1,20 +1,23 @@
 const Order = require('../../models/Order');
-const User = require ('../../models/User')
-
+const Product = require('../../models/Product')
+//Funcionalidad 
 
 exports.registerOrder = async (req, res) => {
     try {
-        const { userId, productId, totalAmount } = req.body;
+        const { userId, productId, quantify } = req.body;
 
-        const user = await User.findByPk(userId);
-        if (!user) {
-            return res.status(404).json({ message: 'Usuario no encontrado' });
+        const product = await Product.findByPk(productId);
+        if (!product) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
         }
+
+        const totalAmount = product.price * quantify;
 
         const newOrder = await Order.create({
             userId,
             productId,
             totalAmount,
+            quantify,
             status: 'pendiente',
             createdAt: new Date(), 
         });

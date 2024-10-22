@@ -11,4 +11,7 @@ const Cart = sequelize.define('Cart',{
     quanty: {type: DataTypes.INTEGER, allowNull: false}
 })
 
+Cart.belongsTo(User, { foreignKey: 'userId' });
+Cart.belongsTo(Product, { foreignKey: 'productId' });
+
 module.exports = Cart

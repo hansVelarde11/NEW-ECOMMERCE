@@ -3,6 +3,7 @@ const sequelize = require('./config/database'); // Importar la configuración de
 const productRoutes = require('./routes/product'); // Importar las rutas
 const userRoutes = require('./routes/auth'); // Importar rutas de autenticación
 const orderRoutes = require('./routes/order')
+const cartRoutes = require('./routes/cart')
 
 // Importar modelos para la sincronización
 const User = require('./models/User');
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use('/api/products', productRoutes); // Ruta para productos
 app.use('/api/auth', userRoutes); // Ruta para autenticación de usuarios
 app.use('/api/orders', orderRoutes);
+app.use('/api/cart', cartRoutes);
 
 // Sincronización de modelos y conexión a la base de datos
 sequelize.sync({ force: false }) // Cambia `force: true` si deseas recrear las tablas en cada inicio
