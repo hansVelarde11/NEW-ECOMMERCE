@@ -1,25 +1,27 @@
 const Order = require('../../models/Order');
 
 exports.deleteOrder = async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+
     try {
-        const { id } = req.params;
+        const order = await Order.findOne({ where: { id, userId } });
 
-        // Verifica que el ID sea un número
-        if (isNaN(id)) {
-            return res.status(400).json({ message: 'ID debe ser un número' });
-        }
-
-        const order = await Order.findByPk(Number(id)); // Asegúrate de convertir a número
         if (!order) {
-            return res.status(404).json({ message: 'Orden no encontrada' });
+            return res.status(404).json({ error: 'Pedido no encontrado' });
         }
+        
+        await order.destroy(); // Elimina el pedido
 
-        order.status = 'eliminada';
-        await order.save();
+        res.status(200).json({
+            success: true,
+            message: 'Se elimino correctamente el producto'
+        });
 
-        res.status(200).json({ message: 'Orden eliminada' });
+
+
+        res.status(204).json(); // No content
     } catch (error) {
-        console.error("Error al eliminar la orden:", error); // Muestra el error en la consola
-        res.status(500).json({ message: 'Error al eliminar la orden', error });
+        res.status(500).json({ error: 'Error al eliminar el pedido' });
     }
 };

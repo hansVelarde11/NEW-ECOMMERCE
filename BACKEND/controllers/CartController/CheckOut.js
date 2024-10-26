@@ -1,47 +1,22 @@
-const Order = require('../../models/Order');
 const Cart = require('../../models/Cart');
-const Product = require('../../models/Product');
+const CartItem = require('../../models/CartItem');
 
-exports.checkout = async (req, res) => {
+
+exports.checkoutCart = async (req, res) => {
+    const userId = req.user.id;
+
     try {
-        const { userId } = req.body;
+        const cart = await Cart.findOne({ where: { userId } });
+        if (!cart) return res.status(404).json({ error: 'Carrito no encontrado' });
 
-    
-        const cartItems = await Cart.findAll({ where: { userId } });
+        const cartItems = await CartItem.findAll({ where: { cartId: cart.id } });
+        // Aquí podrías procesar los productos (descontar stock, generar orden, etc.)
 
-        if (cartItems.length === 0) {
-            return res.status(400).json({ message: 'El carrito está vacío' });
-        }
+        // Limpiar el carrito después del checkout
+        await CartItem.destroy({ where: { cartId: cart.id } });
 
-        let totalAmount = 0;
-        const orderItems = [];
-
-        
-        for (const item of cartItems) {
-            const product = await Product.findByPk(item.productId);
-            
-            if (!product) {
-                return res.status(404).json({ message: 'Producto no encontrado' });
-            }
-
-            totalAmount += product.price * item.quantity;
-
- 
-
-            orderItems.push({
-                userId,
-                productId: item.productId,
-                totalAmount: product.price * item.quantity,
-                quantity: item.quantity,
-                status: 'comprado', 
-            });
-        }
-
-        
-        const newOrder = await Order.bulkCreate(orderItems);
-
-        res.status(201).json({ message: 'Orden creada y productos marcados como comprados', order: newOrder });
+        res.status(200).json({ message: 'Checkout exitoso' });
     } catch (error) {
-        res.status(500).json({ message: 'Error al realizar el checkout', error });
+        res.status(500).json({ error: 'Error durante el checkout' });
     }
 };

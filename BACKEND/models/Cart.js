@@ -6,9 +6,7 @@ const Product = require('./Product')
 
 const Cart = sequelize.define('Cart',{
     id:{type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    userId: {type: DataTypes.INTEGER, references: {model: User, key: 'id'}},
-    productId: {type: DataTypes.INTEGER, references: {model:Product, key:'id'}},
-    quanty: {type: DataTypes.INTEGER, allowNull: false}
+    userId: {type: DataTypes.INTEGER, references: {model: User, key: 'id'}}
 })
 
 Cart.belongsTo(User, { foreignKey: 'userId' });

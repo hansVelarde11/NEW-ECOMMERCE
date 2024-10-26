@@ -1,19 +1,25 @@
-const Cart = require('../../models/Cart')
+const Cart = require('../../models/Cart');
+const CartItem = require('../../models/CartItem');
 
-exports.updateCartQuantity = async (req, res) => {
-    try {
-        const { userId, productId, quantity } = req.body;
+// PUT /cart/items/:productId
+exports.updateCartItemQuantity = async (req, res) => {
+  const userId = req.user.id;
+  const { productId } = req.params;
+  const { quantity } = req.body;
 
-        const cartItem = await Cart.findOne({ where: { userId, productId } });
-        if (!cartItem) {
-            return res.status(404).json({ message: 'Producto no encontrado en el carrito' });
-        }
+  try {
+    const cart = await Cart.findOne({ where: { userId } });
+    const cartItem = await CartItem.findOne({ where: { cartId: cart.id, productId } });
 
-        cartItem.quantity = quantity;
-        await cartItem.save();
-
-        res.status(200).json({ message: 'Cantidad actualizada', cartItem });
-    } catch (error) {
-        res.status(500).json({ message: 'Error al actualizar la cantidad', error });
+    if (!cartItem) {
+      return res.status(404).json({ error: 'Producto no encontrado en el carrito' });
     }
+
+    cartItem.quantity = quantity;
+    await cartItem.save();
+
+    res.status(200).json(cartItem);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar la cantidad del producto' });
+  }
 };

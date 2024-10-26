@@ -1,16 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const { AddProduct } = require('../controllers/CartController/AddCart');
-const { checkout } = require('../controllers/CartController/CheckOut')
-const { removeFromCart } = require('../controllers/CartController/DeleteProductCart')
-const { updateCartQuantity } = require('../controllers/CartController/UpdateCart')
-const { clearCart } = require('../controllers/CartController/VoidCart')
-//
 
-// Ruta para agregar un producto al carrito
-router.post('/add', AddProduct);
-router.post('/check', checkout);
-router.delete('/delete-product', removeFromCart)
-router.put('/update', updateCartQuantity)
-router.delete('/delete', clearCart)
+const authMiddleware = require('../middlewares/authMiddleware');
+
+const { addItemtoCart } = require('../controllers/CartController/addItemCart');
+const { checkoutCart } = require('../controllers/CartController/CheckOut');
+const { removeItemFromCart } = require('../controllers/CartController/DeleteProductCart');
+const { updateCartItemQuantity } = require('../controllers/CartController/UpdateCart');
+const { getCartItems } = require('../controllers/CartController/GetCartItem');
+const { CreateCart } = require('../controllers/CartController/NewCart');
+
+
+router.get('/', authMiddleware, getCartItems);
+
+router.post('/new', authMiddleware, CreateCart);
+
+router.post('/add', authMiddleware, addItemtoCart);
+
+router.post('/checkout', authMiddleware, checkoutCart);
+
+router.delete('/items/:itemId', authMiddleware, removeItemFromCart);
+
+router.put('/items/:itemId', authMiddleware, updateCartItemQuantity);
+
 module.exports = router;

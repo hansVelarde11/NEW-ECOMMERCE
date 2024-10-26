@@ -1,23 +1,33 @@
-const Order = require('../../models/Order'); 
+const Order = require('../../models/Order');
 
-exports.updateOrder = async (req, res) => {
+exports.updateOrderStatus = async (req, res) => {
+    const { id } = req.params; 
+    const { status } = req.body; 
+    console.log("Datos de usuario en req.user:", req.user);
+    const userId = req.user.id; 
+
     try {
-        const { id, productId, totalAmount } = req.body; 
+        const order = await Order.findOne({ where: { id, userId } });
 
-        const order = await Order.findByPk(id);
         if (!order) {
-            return res.status(404).json({ message: 'Orden no encontrada' });
+            return res.status(404).json({ error: 'Pedido no encontrado' });
         }
 
-       
-        if (productId) order.productId = productId;
-        if (totalAmount) order.totalAmount = totalAmount;
+        order.status = status; 
+        await order.save(); 
 
-        await order.save();
-
-        res.status(200).json({ message: 'Orden actualizada', order });
-
+  
+        res.status(200).json({
+            success: true,
+            message: 'Estado del pedido actualizado correctamente',
+            order: order 
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Error al actualizar la orden', error });
+        
+        res.status(500).json({ 
+            success: false,
+            error: 'Error al actualizar el estado del pedido',
+            details: error.message 
+        });
     }
 };
